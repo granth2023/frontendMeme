@@ -1,12 +1,60 @@
-.meme-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .meme-image {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    cursor: pointer;
-  }
+#meme-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  height: 600px; /* Adjust the height as needed */
+  overflow-y: auto; /* Add scrollbars if memes exceed container height */
+}
+
+#meme-container img {
+  width: 200px; /* Adjust the width as needed */
+  height: auto;
+  margin: 10px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  margin: 0 10px;
+}
+
+#meme-details-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 60vh; /* Adjust the height as needed */
+}
+
+#meme-details-img {
+  max-width: 300px;
+  height: auto;
+}
+
+
+#meme-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#meme-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#meme-form label,
+#meme-form input,
+#meme-form button {
+  margin-bottom: 10px;
+}
+
+#meme-form button {
+  margin-top: 10px;
+}

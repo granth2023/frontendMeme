@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="index.js"></script>
+  <title>Meme Details</title>
+</head>
+<body>
+  <div id="meme-details-container">
+    <img id="meme-details-img" src="" alt="">
+  </div>
+
+  <div id="meme-form-container">
+    <div id="meme-form">
+      <input type="text" id="top-text" placeholder="Enter top text">
+<input type="text" id="bottom-text" placeholder="Enter bottom text">
+      <button id="meme-form-button">Submit</button>
+    </div>
+  </div>
+
+  
+  <script>
+    const memeId = new URLSearchParams(window.location.search).get('id'); // Retrieve the meme ID from the query parameter
+
+    
+    fetch(`https://memebackend-copy-git-vercel-granth2023.vercel.app/api/memes/${memeId}`) // Fetch the individual meme by ID
+      .then(response => response.json())
+      .then(data => {
+        const memeImg = document.getElementById('meme-details-img');
+        memeImg.src = data.url; // Set the image source to the meme URL
+        memeImg.alt = data.name; // Set the image alt attribute to the meme name
+      })
+      .catch(error => {
+        console.error('Error fetching meme:', error);
+      });
+
+
+  </script>
+</body>
+</html>
