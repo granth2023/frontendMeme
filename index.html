@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Meme Generator</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="style.css">
+    <script defer src="index.js"></script>
+    <title>Meme Generator</title>
 </head>
 <body>
-  <h1>Meme Generator</h1>
-  <div id="meme-container"></div>
+     <h1>Meme Generator</h1>
+     <div id="meme-container"></div>
   <div class="pagination">
     <button id="previous-btn">Previous</button>
     <button id="next-btn">Next</button>
   </div>
 
-  <!-- Meme Details Page -->
-  <div id="meme-details-container">
-    <img id="meme-details-img" src="" alt="">
-  </div>
-    
+  <button id="see-submissions-btn">See Submissions</button>
+
+  <script src="index.js"></script>
   <script src="index.js"></script>
   <script>
+    const redirectToSubmissions = () => {
+      window.location.href = 'submissions.html';
+    };
+
+    const seeSubmissionsButton = document.getElementById('see-submissions-btn');
+    seeSubmissionsButton.addEventListener('click', redirectToSubmissions);
+  </script>
+</body>
+</html>

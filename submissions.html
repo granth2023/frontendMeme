@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submissions</title>
+  <!-- Include your CSS stylesheets or other head content here -->
+  <style>
+    .submission {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .submission img {
+      max-width: 200px;
+      margin-right: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Submissions</h1>
+  <div id="submissions-container"></div>
+
+  <script>
+    // Fetch submissions from the backend and display them on the page
+    fetch('https://memebackend-copy-g4lvt3gic-granth2023.vercel.app/api/submissions/')
+      .then(response => response.json())
+      .then(submissions => {
+        const submissionsContainer = document.getElementById('submissions-container');
+
+        // Loop through each submission and create a DOM element to display it
+        submissions.forEach(submission => {
+          const submissionElement = document.createElement('div');
+          submissionElement.classList.add('submission');
+
+          // Create an image element and set its source to the submitted image URL
+          const imageElement = document.createElement('img');
+          imageElement.src = submission.Meme.url;
+
+          // Create a paragraph element to display the submitted text
+          const textElement = document.createElement('p');
+          textElement.textContent = `Top Text: ${submission.topText} | Bottom Text: ${submission.bottomText}`;
+
+          // Append the image and text elements to the submission element
+          submissionElement.appendChild(imageElement);
+          submissionElement.appendChild(textElement);
+
+          // Append the submission element to the submissions container
+          submissionsContainer.appendChild(submissionElement);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching submissions:', error);
+      });
+  </script>
+</body>
+</html>

@@ -11,33 +11,155 @@
 <body>
   <div id="meme-details-container">
     <img id="meme-details-img" src="" alt="">
+    <div class="text-overlay">
+      <span class="top-text-overlay" draggable="true"></span>
+      <span class="bottom-text-overlay" draggable="true"></span>
+    </div>
   </div>
 
   <div id="meme-form-container">
     <div id="meme-form">
       <input type="text" id="top-text" placeholder="Enter top text">
-<input type="text" id="bottom-text" placeholder="Enter bottom text">
+      <input type="text" id="bottom-text" placeholder="Enter bottom text">
       <button id="meme-form-button">Submit</button>
+      <button id="save-button">Save</button>
     </div>
   </div>
 
-  
   <script>
-    const memeId = new URLSearchParams(window.location.search).get('id'); // Retrieve the meme ID from the query parameter
+    const memeId = new URLSearchParams(window.location.search).get('id');
 
-    
-    fetch(`https://memebackend-copy-git-vercel-granth2023.vercel.app/api/memes/${memeId}`) // Fetch the individual meme by ID
+    fetch(`https://memebackend-copy-git-vercel-granth2023.vercel.app/api/memes/${memeId}`)
       .then(response => response.json())
       .then(data => {
         const memeImg = document.getElementById('meme-details-img');
-        memeImg.src = data.url; // Set the image source to the meme URL
-        memeImg.alt = data.name; // Set the image alt attribute to the meme name
+        memeImg.src = data.url;
+        memeImg.alt = data.name;
       })
       .catch(error => {
         console.error('Error fetching meme:', error);
       });
 
+    const formButton = document.getElementById('meme-form-button');
+    const saveButton = document.getElementById('save-button');
+    const topTextInput = document.getElementById('top-text');
+    const bottomTextInput = document.getElementById('bottom-text');
+    const topTextOverlay = document.querySelector('.top-text-overlay');
+    const bottomTextOverlay = document.querySelector('.bottom-text-overlay');
+    const memeImage = document.querySelector('#meme-details-img');
+    const memeContainer = document.querySelector('#meme-details-container');
 
+    let topTextPosition = { x: 0, y: 0 };
+    let bottomTextPosition = { x: 0, y: 0 };
+
+    topTextOverlay.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', 'topText');
+    });
+
+    bottomTextOverlay.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', 'bottomText');
+    });
+
+    memeContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    memeContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const id = e.dataTransfer.getData('text/plain');
+
+      const dropX = e.clientX - memeContainer.getBoundingClientRect().left;
+      const dropY = e.clientY - memeContainer.getBoundingClientRect().top;
+
+      if (id === 'topText') {
+        topTextOverlay.style.left = dropX + 'px';
+        topTextOverlay.style.top = dropY + 'px';
+        topTextPosition = { x: dropX / memeContainer.clientWidth, y: dropY / memeContainer.clientHeight };
+      } else if (id === 'bottomText') {
+        bottomTextOverlay.style.left = dropX + 'px';
+        bottomTextOverlay.style.top = dropY + 'px';
+        bottomTextPosition = { x: dropX / memeContainer.clientWidth, y: dropY / memeContainer.clientHeight };
+      }
+
+      console.log('toptxt: ')
+      console.log(topTextOverlay.style.cssText)
+      console.log('bottomtxt: ')
+      console.log(bottomTextOverlay.style.cssText)
+    });
+
+    formButton.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      const topText = topTextInput.value;
+      const bottomText = bottomTextInput.value;
+
+      if (!topText || !bottomText) {
+        return;
+      }
+
+      const submissionData = {
+        Meme: memeId,
+        dateCreated: new Date().toISOString(),
+        topText: topText,
+        bottomText: bottomText,
+        topTextPosition: topTextPosition,
+        bottomTextPosition: bottomTextPosition
+      };
+
+      topTextOverlay.innerHTML = topText;
+      bottomTextOverlay.innerHTML = bottomText;
+
+      var imgWidth = memeImage.clientWidth;
+      var imgHeight = memeImage.clientHeight;
+
+      memeContainer.style.width = imgWidth + 'px';
+      memeContainer.style.height = imgHeight + 'px';
+
+      memeContainer.style.margin = '0 auto';
+
+      console.log("width: " + memeContainer.clientWidth);
+      console.log("height: " + memeContainer.clientHeight);
+    });
+
+    saveButton.addEventListener('click', function(event) {
+  event.preventDefault();
+
+  topText = topTextInput.value;
+  bottomText = bottomTextInput.value;
+
+  if (!topText || !bottomText) {
+    return;
+  }
+
+  const submissionData = {
+    Meme: memeId,
+    dateCreated: new Date().toISOString(),
+    topText: topText,
+    bottomText: bottomText,
+    topTextPosition: topTextPosition,
+    bottomTextPosition: bottomTextPosition,
+    topTextStyles: topTextOverlay.style.cssText,
+    bottomTextStyles: bottomTextOverlay.style.cssText
+  };
+
+  // Send the submission data to the server
+  fetch('https://memebackend-copy-g4lvt3gic-granth2023.vercel.app/api/submissions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(submissionData)
+  })
+    .then(response => response.json())
+    .then(submission => {
+      console.log('Submission created:', submission);
+      // Handle success or navigate to a success page
+    })
+    .catch(error => {
+      console.error('Error creating submission:', error);
+      // Handle error or show an error message
+    });
+});
   </script>
 </body>
 </html>

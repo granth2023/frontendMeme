@@ -54,32 +54,33 @@ document.addEventListener('DOMContentLoaded', function() {
     currentPage++;
     displayMemes();
   });
+})
 
-  // Form submission
-  const form = document.getElementById('meme-form-button');
-  const topTextInput = document.getElementById('top-text');
-  const bottomTextInput = document.getElementById('bottom-text');
+//   // Form submission
+//   const form = document.getElementById('meme-form-button');
+//   const topTextInput = document.getElementById('top-text');
+//   const bottomTextInput = document.getElementById('bottom-text');
 
-  form.addEventListener('click', function(event) {
-    event.preventDefault();
+//   form.addEventListener('click', function(event) {
+//     event.preventDefault();
 
-    const memeId = new URLSearchParams(window.location.search).get('id');
-    console.log('hi')
-    if (!memeId) {
-      console.error('Meme ID not found.');
-      return;
-    }
+//     const memeId = new URLSearchParams(window.location.search).get('id');
+//     console.log('hi')
+//     if (!memeId) {
+//       console.error('Meme ID not found.');
+//       return;
+//     }
 
-    const topText = topTextInput.value;
-    const bottomText = bottomTextInput.value;
+//     const topText = topTextInput.value;
+//     const bottomText = bottomTextInput.value;
 
-    // Overlay text on the image
-    memeImg.classList.add('meme-with-text');
-    memeImg.setAttribute('data-top-text', topText);
-    memeImg.setAttribute('data-bottom-text', bottomText);
+//     // Overlay text on the image
+//     memeImg.classList.add('meme-with-text');
+//     memeImg.setAttribute('data-top-text', topText);
+//     memeImg.setAttribute('data-bottom-text', bottomText);
 
-    // Clear the input fields
-    topTextInput.value = '';
-    bottomTextInput.value = '';
-  });
-});
+//     // Clear the input fields
+//     topTextInput.value = '';
+//     bottomTextInput.value = '';
+//   });
+// });
