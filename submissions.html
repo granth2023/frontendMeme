@@ -11,11 +11,34 @@
       display: flex;
       align-items: center;
       margin-bottom: 20px;
+      position: relative; /* Add this line */
     }
 
     .submission img {
       max-width: 200px;
       margin-right: 20px;
+    }
+
+    .top-text-overlay,
+    .bottom-text-overlay {
+      position: absolute;
+      font-size: 24px;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .top-text-overlay {
+      top: 20px;
+    }
+
+    .bottom-text-overlay {
+      bottom: 20px;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
     }
   </style>
 </head>
@@ -35,8 +58,11 @@
           const submissionContainer = document.createElement('div');
           submissionContainer.classList.add('submission');
 
+          
+
           // Fetch the submission details by ID
           fetch(`https://memebackend-copy-g4lvt3gic-granth2023.vercel.app/api/submissions/${submission._id}`)
+          
             .then(response => response.json())
             .then(submissionDetails => {
               // Fetch the corresponding meme data using the meme ID from submission details
@@ -47,16 +73,42 @@
                   const imageElement = document.createElement('img');
                   imageElement.src = meme.url;
 
-                  // Set the CSS styles for the text based on the saved data
-                  submissionContainer.style.cssText = `
-                    top: ${submissionDetails.topTextPosition};
-                    bottom: ${submissionDetails.bottomTextPosition};
-                    ${submissionDetails.topTextStyles}
-                    ${submissionDetails.bottomTextStyles}
-                  `;
+                  // Create text overlay elements for top and bottom text
+                  const topTextOverlay = document.createElement('span');
+                  topTextOverlay.classList.add('top-text-overlay');
+                  topTextOverlay.innerHTML = submissionDetails.topText;
+                  topTextOverlay.style.cssText = submissionDetails.topTextStyles || ''; // Check if styles exist and assign an empty string if not
+                  submissionContainer.appendChild(topTextOverlay);
+
+                  const bottomTextOverlay = document.createElement('span');
+                  bottomTextOverlay.classList.add('bottom-text-overlay');
+                  bottomTextOverlay.innerHTML = submissionDetails.bottomText;
+                  bottomTextOverlay.style.cssText = submissionDetails.bottomTextStyles || ''; // Check if styles exist and assign an empty string if not
+                  submissionContainer.appendChild(bottomTextOverlay);
+
+                  // Set the position style of the submission container
+                  submissionContainer.style.cssText = submissionDetails.positionStyles || ''; // Check if position styles exist and assign an empty string if not
 
                   // Append the image element to the submission container
                   submissionContainer.appendChild(imageElement);
+
+                  // Create a container for the buttons
+                  const buttonContainer = document.createElement('div');
+                  buttonContainer.classList.add('button-container');
+
+                  // Create an update button for each submission
+                  const updateButton = document.createElement('button');
+updateButton.textContent = 'Update';
+updateButton.addEventListener('click', () => {
+  // Handle the update button click event
+  const queryParams = new URLSearchParams();
+  queryParams.set('id', submissionDetails.Meme);
+  queryParams.set('topText', submissionDetails.topText);
+  queryParams.set('bottomText', submissionDetails.bottomText);
+  window.location.href = `meme.html?${queryParams.toString()}`; // Redirect to the meme details page with query parameters
+});
+
+                  buttonContainer.appendChild(updateButton);
 
                   // Create a delete button for each submission
                   const deleteButton = document.createElement('button');
@@ -66,9 +118,10 @@
                     deleteSubmission(submission._id); // Call the deleteSubmission function with the submission ID
                     submissionContainer.remove(); // Remove the submission container from the DOM
                   });
+                  buttonContainer.appendChild(deleteButton);
 
-                  // Append the delete button to the submission container
-                  submissionContainer.appendChild(deleteButton);
+                  // Append the button container to the submission container
+                  submissionContainer.appendChild(buttonContainer);
 
                   // Append the submission container to the submissions container
                   submissionsContainer.appendChild(submissionContainer);
@@ -103,6 +156,13 @@
           console.error('Error deleting submission:', error);
         });
     }
+
+    // Function to handle update submission
+    function updateSubmission(submissionId) {
+      // Replace this code with your update functionality implementation
+      console.log('Update submission:', submissionId);
+    }
+    submissionContainer.insertBefore(updateButton, deleteButton);
   </script>
 </body>
 </html>

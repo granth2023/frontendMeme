@@ -9,6 +9,7 @@
   <title>Meme Details</title>
 </head>
 <body>
+ 
   <div id="meme-details-container">
     <img id="meme-details-img" src="" alt="">
     <div class="text-overlay">
@@ -23,6 +24,7 @@
       <input type="text" id="bottom-text" placeholder="Enter bottom text">
       <button id="meme-form-button">Submit</button>
       <button id="save-button">Save</button>
+      <button id="update-button">Update</button>
     </div>
   </div>
 
@@ -40,14 +42,23 @@
         console.error('Error fetching meme:', error);
       });
 
-    const formButton = document.getElementById('meme-form-button');
-    const saveButton = document.getElementById('save-button');
-    const topTextInput = document.getElementById('top-text');
-    const bottomTextInput = document.getElementById('bottom-text');
+    const memeContainer = document.getElementById('meme-details-container');
     const topTextOverlay = document.querySelector('.top-text-overlay');
     const bottomTextOverlay = document.querySelector('.bottom-text-overlay');
-    const memeImage = document.querySelector('#meme-details-img');
-    const memeContainer = document.querySelector('#meme-details-container');
+
+    const queryParams = new URLSearchParams(window.location.search);
+    let topText = queryParams.get('topText');
+    let bottomText = queryParams.get('bottomText');
+
+    const formButton = document.getElementById('meme-form-button');
+    const saveButton = document.getElementById('save-button');
+    const updateButton = document.getElementById('update-button');
+    const topTextInput = document.getElementById('top-text');
+    const bottomTextInput = document.getElementById('bottom-text');
+    const memeImage = document.getElementById('meme-details-img');
+
+    topTextInput.value = topText || '';
+    bottomTextInput.value = bottomText || '';
 
     let topTextPosition = { x: 0, y: 0 };
     let bottomTextPosition = { x: 0, y: 0 };
@@ -81,33 +92,34 @@
         bottomTextPosition = { x: dropX / memeContainer.clientWidth, y: dropY / memeContainer.clientHeight };
       }
 
-      console.log('toptxt: ')
-      console.log(topTextOverlay.style.cssText)
-      console.log('bottomtxt: ')
-      console.log(bottomTextOverlay.style.cssText)
+      console.log('toptxt: ');
+      console.log(topTextOverlay.style.cssText);
+      console.log('bottomtxt: ');
+      console.log(bottomTextOverlay.style.cssText);
     });
-
+  
     formButton.addEventListener('click', function(event) {
       event.preventDefault();
 
-      const topText = topTextInput.value;
-      const bottomText = bottomTextInput.value;
+      let updatedTopText = topTextInput.value;
+      let updatedBottomText = bottomTextInput.value;
+
+      if (!updatedTopText || !updatedBottomText) {
+        return;
+      }
+
+      topText = updatedTopText;
+      bottomText = updatedBottomText;
 
       if (!topText || !bottomText) {
         return;
       }
 
-      const submissionData = {
-        Meme: memeId,
-        dateCreated: new Date().toISOString(),
-        topText: topText,
-        bottomText: bottomText,
-        topTextPosition: topTextPosition,
-        bottomTextPosition: bottomTextPosition
-      };
-
       topTextOverlay.innerHTML = topText;
       bottomTextOverlay.innerHTML = bottomText;
+
+      topTextOverlay.draggable = true;
+      bottomTextOverlay.draggable = true;
 
       var imgWidth = memeImage.clientWidth;
       var imgHeight = memeImage.clientHeight;
@@ -122,6 +134,45 @@
     });
 
     saveButton.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      topText = topTextInput.value;
+      bottomText = bottomTextInput.value;
+
+      if (!topText || !bottomText) {
+        return;
+      }
+
+      const submissionData = {
+        Meme: memeId,
+        dateCreated: new Date().toISOString(),
+        topText: topText,
+        bottomText: bottomText,
+        topTextPosition: topTextPosition,
+        bottomTextPosition: bottomTextPosition,
+        topTextStyles: topTextOverlay.style.cssText,
+        bottomTextStyles: bottomTextOverlay.style.cssText
+      };
+
+      fetch('https://memebackend-copy-g4lvt3gic-granth2023.vercel.app/api/submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(submissionData)
+      })
+        .then(response => response.json())
+        .then(submission => {
+          console.log('Submission created:', submission);
+          // Handle success or navigate to a success page
+        })
+        .catch(error => {
+          console.error('Error creating submission:', error);
+          // Handle error or show an error message
+        });
+    });
+
+  updateButton.addEventListener('click', function(event) {
   event.preventDefault();
 
   topText = topTextInput.value;
@@ -131,32 +182,30 @@
     return;
   }
 
+  const queryParams = new URLSearchParams(window.location.search);
+  const submissionId = queryParams.get('id');
+
   const submissionData = {
     Meme: memeId,
-    dateCreated: new Date().toISOString(),
     topText: topText,
-    bottomText: bottomText,
-    topTextPosition: topTextPosition,
-    bottomTextPosition: bottomTextPosition,
-    topTextStyles: topTextOverlay.style.cssText,
-    bottomTextStyles: bottomTextOverlay.style.cssText
+    bottomText: bottomText
   };
 
-  // Send the submission data to the server
-  fetch('https://memebackend-copy-g4lvt3gic-granth2023.vercel.app/api/submissions', {
-    method: 'POST',
+  fetch(`https://memebackend-copy-git-vercel-granth2023.vercel.app/api/submissions/${submissionId}`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(submissionData)
+    
   })
     .then(response => response.json())
     .then(submission => {
-      console.log('Submission created:', submission);
+      console.log('Submission updated:', submission);
       // Handle success or navigate to a success page
     })
     .catch(error => {
-      console.error('Error creating submission:', error);
+      console.error('Error updating submission:', error);
       // Handle error or show an error message
     });
 });

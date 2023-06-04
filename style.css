@@ -24,6 +24,11 @@
   margin: 10px;
 }
 
+#meme-container img:hover {
+  transform: scale(1.1); /* Increase the size of the image on hover */
+}
+
+
 .pagination {
   display: flex;
   justify-content: center;
