@@ -69,6 +69,39 @@
   margin-top: 10px;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+.meme-container {
+  margin-bottom: 20px;
+}
+
+.pagination {
+  margin-bottom: 20px;
+}
+
+#see-submissions-btn {
+  margin-bottom: 20px;
+}
+
+#previous-btn,
+#next-btn,
+#see-submissions-btn {
+  padding: 10px 20px;
+}
+
+
 #text-overlay {
   position: absolute;
   top: 50%;
