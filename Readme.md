@@ -107,6 +107,10 @@ To run the front-end application, you can simply open the index.html file in a w
 * create user page and authentication
 * CSS additions 
 
+### NETLIFY
+
+* https://dynamic-sunburst-b83a52.netlify.app
+
 ### References
 
 * Chatgpt
