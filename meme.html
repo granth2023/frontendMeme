@@ -99,9 +99,11 @@
       console.log('bottomtxt: ');
       console.log(bottomTextOverlay.style.cssText);
     });
-  
+  //add event to form button passing a click and a function passing event 
     formButton.addEventListener('click', function(event) {
+      //prevent default on the passed event
       event.preventDefault();
+      //variable of after changed top + bottom text to hold the input dot value
 
       let updatedTopText = topTextInput.value;
       let updatedBottomText = bottomTextInput.value;
@@ -144,7 +146,7 @@
       if (!topText || !bottomText) {
         return;
       }
-
+//declare what the post request will eventually stringify
       const submissionData = {
         Meme: memeId,
         dateCreated: new Date().toISOString(),
@@ -155,19 +157,25 @@
         topTextStyles: topTextOverlay.style.cssText,
         bottomTextStyles: bottomTextOverlay.style.cssText
       };
-
+//create post fetching the submissions page and post 
       fetch('https://memebackend-copy-g4lvt3gic-granth2023.vercel.app/api/submissions', {
+        //declare method
         method: 'POST',
+        //headers holds application/json
         headers: {
           'Content-Type': 'application/json'
         },
+        //declare body to take json and stringify the submission Data 
         body: JSON.stringify(submissionData)
       })
+      //promise response to become json 
         .then(response => response.json())
+        //promise submission to console long submission 
         .then(submission => {
           console.log('Submission created:', submission);
           // Handle success or navigate to a success page
         })
+        //catch passes error to become a console log of error
         .catch(error => {
           console.error('Error creating submission:', error);
           // Handle error or show an error message
