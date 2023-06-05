@@ -9,7 +9,7 @@
   <title>Meme Details</title>
 </head>
 <body>
- 
+ <!-- createcontainer to hold the meme images, and ability to overlay text with drag -->
   <div id="meme-details-container">
     <img id="meme-details-img" src="" alt="">
     <div class="text-overlay">
@@ -17,7 +17,7 @@
       <span class="bottom-text-overlay" draggable="true"></span>
     </div>
   </div>
-
+<!--create container for form-->
   <div id="meme-form-container">
     <div id="meme-form">
       <input type="text" id="top-text" placeholder="Enter top text">
@@ -29,10 +29,13 @@
   </div>
 
   <script>
+  //get the ID for the meme selected
     const memeId = new URLSearchParams(window.location.search).get('id');
-
+//get the meme specificied in the previous click 
     fetch(`https://memebackend-copy-git-vercel-granth2023.vercel.app/api/memes/${memeId}`)
+    //turn the response to json file
       .then(response => response.json())
+      //promise data to hold the img at src and alt which hold url and anme
       .then(data => {
         const memeImg = document.getElementById('meme-details-img');
         memeImg.src = data.url;
@@ -52,7 +55,6 @@
 
     const formButton = document.getElementById('meme-form-button');
     const saveButton = document.getElementById('save-button');
-    const updateButton = document.getElementById('update-button');
     const topTextInput = document.getElementById('top-text');
     const bottomTextInput = document.getElementById('bottom-text');
     const memeImage = document.getElementById('meme-details-img');
@@ -172,43 +174,7 @@
         });
     });
 
-  updateButton.addEventListener('click', function(event) {
-  event.preventDefault();
-
-  topText = topTextInput.value;
-  bottomText = bottomTextInput.value;
-
-  if (!topText || !bottomText) {
-    return;
-  }
-
-  const queryParams = new URLSearchParams(window.location.search);
-  const submissionId = queryParams.get('id');
-
-  const submissionData = {
-    Meme: memeId,
-    topText: topText,
-    bottomText: bottomText
-  };
-
-  fetch(`https://memebackend-copy-git-vercel-granth2023.vercel.app/api/submissions/${submissionId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(submissionData)
-    
-  })
-    .then(response => response.json())
-    .then(submission => {
-      console.log('Submission updated:', submission);
-      // Handle success or navigate to a success page
-    })
-    .catch(error => {
-      console.error('Error updating submission:', error);
-      // Handle error or show an error message
-    });
-});
+  
   </script>
 </body>
 </html>
